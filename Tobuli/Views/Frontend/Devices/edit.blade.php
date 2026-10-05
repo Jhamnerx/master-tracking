@@ -1,40 +1,39 @@
 @extends('Frontend.Layouts.modal')
 
 @section('title')
-    <i class="icon device"></i> {!!trans('global.edit')!!}
+    <i class="icon device"></i> {!! trans('global.edit') !!}
 @stop
 
 @section('body')
     <ul class="nav nav-tabs nav-default" role="tablist">
-        <li class="active"><a href="#device-form-main" role="tab" data-toggle="tab">{!!trans('front.main')!!}</a></li>
+        <li class="active"><a href="#device-form-main" role="tab" data-toggle="tab">{!! trans('front.main') !!}</a></li>
         @if (isAdmin() && Auth::User()->can('view', new \Tobuli\Entities\User()))
-            <li><a href="#device-form-users" role="tab" data-toggle="tab">{!!trans('front.users')!!}</a></li>
+            <li><a href="#device-form-users" role="tab" data-toggle="tab">{!! trans('front.users') !!}</a></li>
         @endif
-        <li><a href="#device-form-icons" role="tab" data-toggle="tab">{!!trans('front.icons')!!}</a></li>
-        <li><a href="#device-form-advanced" role="tab" data-toggle="tab">{!!trans('front.advanced')!!}</a></li>
-        <li><a href="#device-form-sensors" role="tab" data-toggle="tab">{!!trans('front.sensors')!!}</a></li>
-        <li><a href="#device-form-services" role="tab" data-toggle="tab">{!!trans('front.services')!!}</a></li>
-        <li><a href="#device-form-accuracy" role="tab" data-toggle="tab">{!!trans('front.accuracy')!!}</a></li>
-        <li><a href="#device-form-tail" role="tab" data-toggle="tab">{!!trans('front.tail')!!}</a></li>
-        @if (Auth::user()->can('view', $item, 'mtc') || Auth::user()->can('view', $item, 'mininter'))
-            <li><a href="#device-form-integrations" role="tab" data-toggle="tab">{!!trans('front.integrations')!!}</a></li>
+        <li><a href="#device-form-icons" role="tab" data-toggle="tab">{!! trans('front.icons') !!}</a></li>
+        <li><a href="#device-form-advanced" role="tab" data-toggle="tab">{!! trans('front.advanced') !!}</a></li>
+        <li><a href="#device-form-sensors" role="tab" data-toggle="tab">{!! trans('front.sensors') !!}</a></li>
+        <li><a href="#device-form-services" role="tab" data-toggle="tab">{!! trans('front.services') !!}</a></li>
+        <li><a href="#device-form-accuracy" role="tab" data-toggle="tab">{!! trans('front.accuracy') !!}</a></li>
+        <li><a href="#device-form-tail" role="tab" data-toggle="tab">{!! trans('front.tail') !!}</a></li>
+
+        @if (expensesTypesExist())
+            <li><a href="#device-form-expenses" role="tab" data-toggle="tab"
+                    data-url="{{ route('device_expenses.index', $item->id) }}">{!! trans('front.expenses') !!}</a></li>
         @endif
-        @if(expensesTypesExist())
-            <li><a href="#device-form-expenses" role="tab" data-toggle="tab" data-url="{{ route('device_expenses.index', $item->id) }}">{!!trans('front.expenses')!!}</a></li>
-        @endif
-        @if(Auth::User()->perm('device_camera', 'view'))
-            <li><a href="#device-form-cameras" role="tab" data-toggle="tab">{!!trans('front.cameras')!!}</a></li>
+        @if (Auth::User()->perm('device_camera', 'view'))
+            <li><a href="#device-form-cameras" role="tab" data-toggle="tab">{!! trans('front.cameras') !!}</a></li>
         @endif
         @if (Auth::user()->can('view', $item, 'custom_fields') && $item->hasCustomFields())
-            <li><a href="#device-custom-fields" role="tab" data-toggle="tab">{!!trans('admin.custom_fields')!!}</a></li>
+            <li><a href="#device-custom-fields" role="tab" data-toggle="tab">{!! trans('admin.custom_fields') !!}</a></li>
         @endif
         @if (Auth::user()->can('edit', $item, 'tags'))
-            <li><a href="#device-form-tags" role="tab" data-toggle="tab">{!!trans('front.tags')!!}</a></li>
+            <li><a href="#device-form-tags" role="tab" data-toggle="tab">{!! trans('front.tags') !!}</a></li>
         @endif
     </ul>
 
-    {!!Form::open(['route' => 'devices.update', 'method' => 'PUT'])!!}
-    {!!Form::hidden('id', $item->id)!!}
+    {!! Form::open(['route' => 'devices.update', 'method' => 'PUT']) !!}
+    {!! Form::hidden('id', $item->id) !!}
 
     <div class="tab-content">
         <div id="device-form-main" class="tab-pane active">
@@ -72,17 +71,12 @@
             @include('Frontend.Devices.partials.tail')
         </div>
 
-        @if (Auth::user()->can('view', $item, 'mtc') || Auth::user()->can('view', $item, 'mininter'))
-            <div id="device-form-integrations" class="tab-pane">
-                @include('Frontend.Devices.partials.integrations')
-            </div>
-        @endif
 
-        @if(expensesTypesExist())
+        @if (expensesTypesExist())
             <div id="device-form-expenses" class="tab-pane"></div>
         @endif
 
-        @if(Auth::User()->perm('device_camera', 'view'))
+        @if (Auth::User()->perm('device_camera', 'view'))
             <div id="device-form-cameras" class="tab-pane">
                 @include('Frontend.Devices.partials.cameras')
             </div>
@@ -104,14 +98,14 @@
     {!! Form::close() !!}
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
-            var measurements = {!!json_encode($device_fuel_measurements)!!};
+            var measurements = {!! json_encode($device_fuel_measurements) !!};
 
-            $(document).on('change', '#devices_edit select[name="fuel_measurement_id"]', function () {
+            $(document).on('change', '#devices_edit select[name="fuel_measurement_id"]', function() {
                 var val = $(this).val();
 
-                $.each(measurements, function (index, value) {
+                $.each(measurements, function(index, value) {
                     if (value.id == val) {
                         $('.distance_title').html(value.distance_title);
                         $('.fuel_title').html(value.fuel_title);
@@ -120,14 +114,14 @@
                 });
             });
 
-            $(document).on('change', '#devices_edit input[name="enable_expiration_date"]', function () {
+            $(document).on('change', '#devices_edit input[name="enable_expiration_date"]', function() {
                 if ($(this).prop('checked'))
                     $('input[name="expiration_date"]').removeAttr('disabled');
                 else
                     $('input[name="expiration_date"]').attr('disabled', 'disabled');
             });
 
-            $(document).on('change', '#devices_edit input[name="forward[active]"]', function () {
+            $(document).on('change', '#devices_edit input[name="forward[active]"]', function() {
                 if ($(this).prop('checked'))
                     $('input[name^="forward["]:not([name="forward[active]"])').removeAttr('disabled');
                 else
@@ -139,7 +133,7 @@
 
             $('#devices_edit input[name="forward[active]"]').trigger('change');
 
-            $(document).on('change', '#devices_edit input[name="mininter"]', function () {
+            $(document).on('change', '#devices_edit input[name="mininter"]', function() {
                 $('#devices_edit select[name="mininter_type"]').prop('disabled', !$(this).prop('checked'));
             });
 
@@ -153,7 +147,7 @@
         });
 
         tables.set_config('device-form-services', {
-            url: '{!!route('services.table', $item->id)!!}'
+            url: '{!! route('services.table', $item->id) !!}'
         });
 
         function services_create_modal_callback() {
@@ -169,7 +163,7 @@
         }
 
         tables.set_config('device-form-sensors', {
-            url: '{!!route('sensors.index', $item->id)!!}'
+            url: '{!! route('sensors.index', $item->id) !!}'
         });
 
         function sensors_create_modal_callback() {
@@ -185,7 +179,7 @@
         }
 
         tables.set_config('device-form-cameras', {
-            url: '{!!route('device_camera.index', $item->id)!!}'
+            url: '{!! route('device_camera.index', $item->id) !!}'
         });
 
         function device_camera_create_modal_callback() {
@@ -207,11 +201,11 @@
 @stop
 
 @section('buttons')
-    <button type="button" class="btn btn-action update">{!!trans('global.save')!!}</button>
-    <button type="button" class="btn btn-default" data-dismiss="modal">{!!trans('global.cancel')!!}</button>
+    <button type="button" class="btn btn-action update">{!! trans('global.save') !!}</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">{!! trans('global.cancel') !!}</button>
     @if (Auth::User()->perm('devices', 'remove'))
         <a href="javascript:" data-modal="objects_delete" class="btn btn-danger"
-           data-url="{{ route("devices.do_destroy", ['id' => $item->id]) }}">
+            data-url="{{ route('devices.do_destroy', ['id' => $item->id]) }}">
             {{ trans('global.delete') }}
         </a>
     @endif

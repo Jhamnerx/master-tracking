@@ -1,37 +1,35 @@
 @extends('Frontend.Layouts.modal')
 
 @section('title')
-    <i class="icon device"></i> {!!trans('global.add_new')!!}
+    <i class="icon device"></i> {!! trans('global.add_new') !!}
 @stop
 
 @section('body')
     <ul class="nav nav-tabs nav-default" role="tablist">
-        <li class="active"><a href="#device-add-form-main" role="tab" data-toggle="tab">{!!trans('front.main')!!}</a></li>
+        <li class="active"><a href="#device-add-form-main" role="tab" data-toggle="tab">{!! trans('front.main') !!}</a></li>
         @if (isAdmin() && Auth::User()->can('view', new \Tobuli\Entities\User()))
-            <li><a href="#device-add-form-users" role="tab" data-toggle="tab">{!!trans('front.users')!!}</a></li>
+            <li><a href="#device-add-form-users" role="tab" data-toggle="tab">{!! trans('front.users') !!}</a></li>
         @endif
-        <li><a href="#device-add-form-icons" role="tab" data-toggle="tab">{!!trans('front.icons')!!}</a></li>
-        <li><a href="#device-add-form-advanced" role="tab" data-toggle="tab">{!!trans('front.advanced')!!}</a></li>
+        <li><a href="#device-add-form-icons" role="tab" data-toggle="tab">{!! trans('front.icons') !!}</a></li>
+        <li><a href="#device-add-form-advanced" role="tab" data-toggle="tab">{!! trans('front.advanced') !!}</a></li>
         @if (isAdmin())
             <li><a href="#device-add-form-sensors" role="tab" data-toggle="tab">{{ trans('front.sensors') }}</a></li>
         @endif
-        <li><a href="#device-add-form-accuracy" role="tab" data-toggle="tab">{!!trans('front.accuracy')!!}</a></li>
-        <li><a href="#device-add-form-tail" role="tab" data-toggle="tab">{!!trans('front.tail')!!}</a></li>
-        @if (Auth::user()->can('view', $item, 'mtc') || Auth::user()->can('view', $item, 'mininter'))
-            <li><a href="#device-add-form-integrations" role="tab" data-toggle="tab">{!!trans('front.integrations')!!}</a></li>
-        @endif
-        <li><a href="javascript:" role="tab" class="disabled">{!!trans('front.services')!!}</a></li>
+        <li><a href="#device-add-form-accuracy" role="tab" data-toggle="tab">{!! trans('front.accuracy') !!}</a></li>
+        <li><a href="#device-add-form-tail" role="tab" data-toggle="tab">{!! trans('front.tail') !!}</a></li>
+
+        <li><a href="javascript:" role="tab" class="disabled">{!! trans('front.services') !!}</a></li>
         @if (Auth::user()->can('view', $item, 'custom_fields') && $item->hasCustomFields())
-            <li><a href="#device-custom-fields" role="tab" data-toggle="tab">{!!trans('admin.custom_fields')!!}</a></li>
+            <li><a href="#device-custom-fields" role="tab" data-toggle="tab">{!! trans('admin.custom_fields') !!}</a></li>
         @endif
         @if (Auth::User()->can('edit', $item, 'tags'))
-            <li><a href="#device-form-tags" role="tab" data-toggle="tab">{!!trans('front.tags')!!}</a></li>
+            <li><a href="#device-form-tags" role="tab" data-toggle="tab">{!! trans('front.tags') !!}</a></li>
         @endif
     </ul>
 
-    {!!Form::open(['route' => 'devices.store', 'method' => 'POST'])!!}
+    {!! Form::open(['route' => 'devices.store', 'method' => 'POST']) !!}
 
-    {!!Form::hidden('id')!!}
+    {!! Form::hidden('id') !!}
 
     <div class="tab-content">
         <div id="device-add-form-main" class="tab-pane active">
@@ -64,11 +62,6 @@
             @include('Frontend.Devices.partials.tail')
         </div>
 
-        @if (Auth::user()->can('view', $item, 'mtc') || Auth::user()->can('view', $item, 'mininter'))
-            <div id="device-add-form-integrations" class="tab-pane">
-                @include('Frontend.Devices.partials.integrations')
-            </div>
-        @endif
 
         @if (Auth::user()->can('view', $item, 'custom_fields') && $item->hasCustomFields())
             <div id="device-custom-fields" class="tab-pane">
@@ -82,16 +75,16 @@
             </div>
         @endif
     </div>
-    {!!Form::close()!!}
+    {!! Form::close() !!}
 
     <script>
         $(document).ready(function() {
-            var measurements = {!!json_encode($device_fuel_measurements)!!};
+            var measurements = {!! json_encode($device_fuel_measurements) !!};
 
-            $(document).on('change', '#devices_create select[name="fuel_measurement_id"]', function () {
+            $(document).on('change', '#devices_create select[name="fuel_measurement_id"]', function() {
                 var val = $(this).val();
 
-                $.each(measurements, function (index, value) {
+                $.each(measurements, function(index, value) {
                     if (value.id == val) {
                         $('.distance_title').html(value.distance_title);
                         $('.fuel_title').html(value.fuel_title);
@@ -101,14 +94,14 @@
                 });
             });
 
-            $(document).on('change', '#devices_create input[name="enable_expiration_date"]', function () {
+            $(document).on('change', '#devices_create input[name="enable_expiration_date"]', function() {
                 if ($(this).prop('checked'))
                     $('input[name="expiration_date"]').removeAttr('disabled');
                 else
                     $('input[name="expiration_date"]').attr('disabled', 'disabled');
             });
 
-            $(document).on('change', '#devices_create input[name="forward[active]"]', function () {
+            $(document).on('change', '#devices_create input[name="forward[active]"]', function() {
                 if ($(this).prop('checked'))
                     $('input[name^="forward["]:not([name="forward[active]"])').removeAttr('disabled');
                 else
@@ -119,8 +112,9 @@
 
             $('#devices_create input[name="forward[active]"]').trigger('change');
 
-            $(document).on('change', '#devices_create input[name="mininter"]', function () {
-                $('#devices_create select[name="mininter_type"]').prop('disabled', !$(this).prop('checked'));
+            $(document).on('change', '#devices_create input[name="mininter"]', function() {
+                $('#devices_create select[name="mininter_type"]').prop('disabled', !$(this).prop(
+                    'checked'));
             });
 
             $('#devices_create input[name="mininter"]').trigger('change');
