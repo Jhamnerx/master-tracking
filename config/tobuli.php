@@ -3,7 +3,7 @@ return [
     'version' => '3.7.13',
     'key'  => env('key', 'Hdaiohaguywhga12344hdsbsdsfsd'),
     'type' => env('APP_TYPE', 'ss3'),
-    
+
     'logs_path' => env('logs_path', '/opt/traccar/logs'),
     'media_path' => env('media_path', '/var/www/html/requestPhoto/'),
 
@@ -145,13 +145,13 @@ return [
     'max_speed' => env('MAX_SPEED_LIMIT', 300),
     'min_time_gap' => env('MIN_TIME_GAP', 600),
     'prev_position_device_object' => env('PREV_POSITION_DEVICE_OBJECT', false),
-    'apply_network_data' => env('APPLY_NETWORK_DATA', false),
+    'apply_network_data' => env('APPLY_NETWORK_DATA', true),
     'overwrite_invalid'  => env('OVERWRITE_INVALID', true),
     'device_sidebar_query' => env('DEVICE_SIDEBAR_QUERY', true),
     'entityloader_store_query' => env('ENTITYLOADER_STORE_QUERY', false),
     'alerts_throw_user_device' => env('ALERTS_THROW_USER_DEVICE', true),
 
-  # Minutes before device is offline
+    # Minutes before device is offline
     'device_offline_minutes' => 3,
     'check_frequency' => env('APP_CHECK_FREQUENCY', 5),
     'check_chat_frequency' => env('APP_CHECK_CHAT_FREQUENCY', 5),
@@ -166,8 +166,8 @@ return [
         'min_length' => 8,
         'length' => 12,
         'includes' => [
-            'lowercase',
-            'uppercase',
+            //'lowercase',
+            //'uppercase',
             'numbers',
             //'specials'
         ],
@@ -591,7 +591,7 @@ return [
         'light-pink'        => 'Light Pink',
         'light-win10-blue'  => 'Light Win10 Blue',
         'light-ocean-blue'  => 'Light Ocean Blue',
-        'light-tropical-blue'=> 'Light Tropical Blue',
+        'light-tropical-blue' => 'Light Tropical Blue',
         'light-indigo'      => 'Light Indigo',
         'light-black'       => 'Light Black',
         'dark-blue'         => 'Dark Blue',
@@ -601,7 +601,7 @@ return [
         'dark-pink'         => 'Dark Pink',
         'dark-win10-blue'   => 'Dark Win10 Blue',
         'dark-ocean-blue'   => 'Dark Ocean Blue',
-        'dark-tropical-blue'=> 'Dark Tropical Blue',
+        'dark-tropical-blue' => 'Dark Tropical Blue',
         'dark-indigo'       => 'Dark Indigo',
     ],
 
@@ -609,7 +609,10 @@ return [
         'default' => true,
         'status' => true,
         'list' => [
-            'device', 'sensors', 'services', 'camera'
+            'device',
+            'sensors',
+            'services',
+            'camera'
         ]
     ],
 
