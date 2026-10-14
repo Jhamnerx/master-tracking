@@ -118,6 +118,10 @@ class PositionsWriter
         foreach ($this->stack->getKeyDataList($key) as $data) {
             $s = microtime(true);
 
+            // Before normalizeData: command replies often carry a placeholder fixTime
+            // (e.g. 1980-01-06 when the device has no fix) that the date filters reject.
+            $this->dispatchResult($data);
+
             $data = $this->normalizeData($data);
 
             $n += microtime(true) - $s;
@@ -187,9 +191,13 @@ class PositionsWriter
         if (in_array($data['protocol'], ['gt06', 'gt062', 'h02'])) {
             $current = strtotime($data['device_time']);
 
-            //2007-01-01
-            if ($current < 1167609600)
-                $data['device_time'] = date('Y-m-d H:i:s', $current + 619315200);
+            // GPS week rollover: the device reports a date exactly 1024 weeks in the past.
+            // Was a fixed "before 2007-01-01" check, which stopped matching on 2026-08-17.
+            $rollover = 619315200; // 1024 weeks
+            $shifted = $current + $rollover;
+
+            if ($current < time() - $rollover / 2 && $shifted <= time() + 86400)
+                $data['device_time'] = date('Y-m-d H:i:s', $shifted);
         }
 
         $data['time'] = $data['device_time'];
@@ -477,12 +485,18 @@ class PositionsWriter
         return $position;
     }
 
+    protected function dispatchResult($data)
+    {
+        $attributes = is_array($data['attributes'] ?? null) ? $data['attributes'] : [];
+        $attributes = array_change_key_case($attributes, CASE_LOWER);
+
+        if ($result = $attributes['result'] ?? null) {
+            event(new PositionResultRetrieved($this->device, is_scalar($result) ? (string)$result : json_encode($result)));
+        }
+    }
+
     protected function proccess($data)
     {
-        if ($result = $data['parameters']['result'] ?? null) {
-            event(new PositionResultRetrieved($this->device, is_scalar($result) ? $result : json_encode($result)));
-        }
-
         if (! $this->device->traccar)
             return;
 

@@ -2,10 +2,10 @@
 
 namespace App\Events;
 
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Queue\SerializesModels;
 
-class NoticeEvent extends Event implements ShouldBroadcast
+class NoticeEvent extends Event implements ShouldBroadcastNow
 {
     const TYPE_SUCCESS = 'success';
     const TYPE_INFO = 'info';
